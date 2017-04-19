@@ -1,0 +1,47 @@
+.toggleShow {
+    max-width: 5vw;
+    height: auto;
+    margin: -5px;
+    float: right;
+    position: relative;
+    top: 0;
+    right: 0;
+}
+
+.fullScreen {
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+}
+
+.block {
+    border-style: double;
+    font-size: 3.5vw;
+    padding: 0.3vw;
+    display: inline-block;
+    width: 48%;
+}
+
+.content {
+    padding: 5px;
+}
+
+.side {
+  display: inline-block;
+}
+
+.upperCards {
+   float: right;
+}
+
+.block {
+  margin-bottom: 20px;
+}
+
+input {
+  padding: 0.5vw;
+  font-size: inherit;
+  max-width: 80%;
+}

@@ -1,0 +1,19 @@
+<div class="navbar-header">
+  <button class="btn btn-primary btn-margin" (click)="auth.login()" *ngIf="!access">Log In</button>
+  <button class="btn btn-primary btn-margin" (click)="auth.logout()" *ngIf="access">Log Out</button>
+  <h1 *ngIf="!access"> No access for you boi!</h1>
+</div>
+
+<span *ngIf="access">
+  <div *ngFor="let block of components_" class="block" [style.clear]="float_[block]" [style.float]="float_[block]">
+    <span class="animeShow" *ngIf="!show_[block]">
+      {{ block }}
+    </span>
+      <img class="toggleShow" *ngIf="!show_[block]" src="img/plus.png" (click)="toggle([block])" />
+      <img class="toggleShow" *ngIf="show_[block]" src="img/minus.png" (click)="toggle([block])" />
+
+    <div class="content" *ngIf="show_[block]">
+        <loader component={{block}}></loader>
+    </div>
+  </div>
+</span>
