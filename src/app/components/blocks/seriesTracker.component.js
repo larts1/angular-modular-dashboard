@@ -9,30 +9,29 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var firebase_service_1 = require('../firebase.service');
-// import { DynamicComponent } from './dynamiccomponent'
-var iframe_component_1 = require('./iframe.component');
 var seriesTracker = (function () {
-    function seriesTracker(dbHandle) {
-        this.dbHandle = dbHandle;
+    function seriesTracker() {
+        this.selector = "seriesTracker";
         this.seriesName = "";
         this.episode = 0;
+        this.dbHandle = this.directory.firebaseService;
+        this.directory.importType(this, "iframeComponent");
     }
     seriesTracker.prototype.openNew = function () {
         if (this.url == "gogo")
-            iframe_component_1.iframeComponent.prototype.address = "https://ww1.gogoanime.io/" + this.name + "-episode-" + (this.episode + 1);
+            this.iframeComponent.prototype.address = "https://ww1.gogoanime.io/" + this.name + "-episode-" + (this.episode + 1);
         else
-            iframe_component_1.iframeComponent.prototype.address = this.url;
-        iframe_component_1.iframeComponent.prototype.creator = this;
-        iframe_component_1.iframeComponent.prototype.ngAfterViewInit = function () {
+            this.iframeComponent.prototype.address = this.url;
+        this.iframeComponent.prototype.creator = this;
+        this.iframeComponent.prototype.ngAfterViewInit = function () {
             this.iframe.nativeElement.allowFullscreen = true;
             this.creator.giveLink(this);
         };
-        this.directory.loadComponentsFromType(iframe_component_1.iframeComponent);
+        this.directory.loadComponentsFromType(this.iframeComponent);
+        this.openNew = function () { }; //EI voi kutsua uudestaan :\
     };
     seriesTracker.prototype.giveLink = function (this_) {
         this.iframe = this_;
-        console.log("adding " + this);
     };
     seriesTracker.prototype.close = function () {
         return true;
@@ -45,14 +44,13 @@ var seriesTracker = (function () {
         this.dbHandle.update(this.episode, "/epTrack/" + this.name + "/episode");
     };
     seriesTracker.prototype.ngOnDestroy = function () {
-        console.log("Destroied AnimeComponent");
     };
     seriesTracker = __decorate([
         core_1.Component({
             selector: "seriesTracker",
-            template: "\n  <span>\n    {{ name }}:\n    <input type=text [(ngModel)]=\"episode\" (change)=\"updateEp()\"\n     style=\"margin: 10px 0px; padding: 0px; max-width: 18%\">\n\n    <input type=button value=\"Next episode\" (click)=\"openNew()\"\n    (window:message)=\"onMessage($event)\">\n  </span>\n      ",
+            template: "\n  <span>\n    {{ name }}:\n    <input type=text [(ngModel)]=\"episode\" (change)=\"updateEp()\"\n     style=\"margin: 10px 0px; padding: 0px; max-width: 18%\">\n\n    <input type=button value=\"Next episodes\" (click)=\"openNew()\"\n    (window:message)=\"onMessage($event)\">\n  </span>\n      ",
         }), 
-        __metadata('design:paramtypes', [firebase_service_1.FirebaseService])
+        __metadata('design:paramtypes', [])
     ], seriesTracker);
     return seriesTracker;
 }());

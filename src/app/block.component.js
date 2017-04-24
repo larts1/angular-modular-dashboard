@@ -34,7 +34,6 @@ var BlockComponent = (function () {
                 }
             }
             _this.SyncComponents(newComps);
-            console.log("ASync adding components" + newComps);
             _this.cdr.detectChanges(); // update page
         });
         this.auth.onUser(this.admin, function (value) {
@@ -54,15 +53,22 @@ var BlockComponent = (function () {
         this.cdr.detectChanges(); // update page
     };
     BlockComponent.prototype.toggle = function (event) {
-        console.log("Toggling component " + event);
         this.show_[event] = !this.show_[event];
+        this.cdr.detectChanges(); // update page
+    };
+    BlockComponent.prototype.refresh = function (blockName) {
+        //Poistetaan vanha
+        this.show_[blockName] = false;
+        this.directory_.refreshComponent(blockName);
+        this.cdr.detectChanges(); // update page
+        //Avataan uusi !!! 
+        this.show_[blockName] = true;
         this.cdr.detectChanges(); // update page
     };
     BlockComponent = __decorate([
         core_1.Component({
             selector: 'block',
             templateUrl: '/app/blocks.html',
-            styleUrls: ['/app/bloc_style.css'],
         }), 
         __metadata('design:paramtypes', [componentdirectory_provider_1.ComponentDirectory, core_1.ChangeDetectorRef, Auth_service_1.Auth])
     ], BlockComponent);
@@ -75,7 +81,6 @@ var LoaderComponent = (function () {
         this.directory_ = directory_;
         this.ref = ref;
         this.loading_ = true;
-        console.log("Constructed the LoaderComponent");
     }
     LoaderComponent.prototype.ngAfterViewInit = function () {
         var _this = this;

@@ -8,7 +8,6 @@ import { COMPILER_PROVIDERS } from '@angular/compiler';
 
 import { BlockComponent, LoaderComponent}  from './block.component';
 import { ComponentDirectory } from './components/componentdirectory.provider'
-import { FirebaseService } from './components/firebase.service'
 
 import { Auth } from './Auth.service'
 
@@ -17,7 +16,7 @@ import { Auth } from './Auth.service'
   imports:      [ BrowserModule, HttpModule,FormsModule],
   declarations: [BlockComponent, LoaderComponent],
   bootstrap:    [ BlockComponent ],
-  providers: [ FirebaseService, COMPILER_PROVIDERS, Auth, ComponentDirectory]
+  providers: [ COMPILER_PROVIDERS, Auth, ComponentDirectory]
 })
 
 export class AppModule {

@@ -4,9 +4,7 @@ declare var $:any;
 import { FirebaseService } from '../firebase.service'
 
 import { ComponentDirectory } from '../componentdirectory.provider'
-import { DynamicComponent } from './dynamiccomponent'
-import { iframeComponent } from './iframe.component'
-
+// import { DynamicComponent } from './dynamiccomponent'
 @Component({
   selector: "anime",
   template: `
@@ -28,6 +26,7 @@ import { iframeComponent } from './iframe.component'
       `,
 })
 export class AnimeComponent implements OnDestroy{
+  selector = "anime";
   name = "Anime";
   seriesName = "";
   episode = 0;
@@ -43,17 +42,17 @@ export class AnimeComponent implements OnDestroy{
 
   openNew() {
 
-    iframeComponent.prototype.address = "https://ww1.gogoanime.io/one-piece-episode-"+(this.episode+1);
-    iframeComponent.prototype.creator = this;
-
-    iframeComponent.prototype.ngAfterViewInit = function() {
-      this.iframe.nativeElement.allowFullscreen = true;
-      console.log(this.iframe.nativeElement);
-
-      this.creator.giveLink(this);
-    }
-
-    this.directory_.loadComponentsFromType(iframeComponent);
+    // iframeComponent.prototype.address = "https://ww1.gogoanime.io/one-piece-episode-"+(this.episode+1);
+    // iframeComponent.prototype.creator = this;
+    //
+    // iframeComponent.prototype.ngAfterViewInit = function() {
+    //   this.iframe.nativeElement.allowFullscreen = true;
+    //   console.log(this.iframe.nativeElement);
+    //
+    //   this.creator.giveLink(this);
+    // }
+    //
+    // this.directory_.loadComponentsFromType(iframeComponent);
   }
 
   giveLink(this_) {
@@ -66,9 +65,6 @@ export class AnimeComponent implements OnDestroy{
   }
 
   ngAfterContentInit() {
-     this.dbHandle.bind(this, "to");
-     this.dbHandle.bind(this, "episode");
-     this.dbHandle.bind(this, "time");
   }
 
   turnOn() {

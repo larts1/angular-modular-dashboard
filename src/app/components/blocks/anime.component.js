@@ -10,24 +10,28 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var firebase_service_1 = require('../firebase.service');
-var iframe_component_1 = require('./iframe.component');
+// import { DynamicComponent } from './dynamiccomponent'
 var AnimeComponent = (function () {
     function AnimeComponent(dbHandle) {
         this.dbHandle = dbHandle;
+        this.selector = "anime";
         this.name = "Anime";
         this.seriesName = "";
         this.episode = 0;
         // this.seriesName = seriesName;
     }
     AnimeComponent.prototype.openNew = function () {
-        iframe_component_1.iframeComponent.prototype.address = "https://ww1.gogoanime.io/one-piece-episode-" + (this.episode + 1);
-        iframe_component_1.iframeComponent.prototype.creator = this;
-        iframe_component_1.iframeComponent.prototype.ngAfterViewInit = function () {
-            this.iframe.nativeElement.allowFullscreen = true;
-            console.log(this.iframe.nativeElement);
-            this.creator.giveLink(this);
-        };
-        this.directory_.loadComponentsFromType(iframe_component_1.iframeComponent);
+        // iframeComponent.prototype.address = "https://ww1.gogoanime.io/one-piece-episode-"+(this.episode+1);
+        // iframeComponent.prototype.creator = this;
+        //
+        // iframeComponent.prototype.ngAfterViewInit = function() {
+        //   this.iframe.nativeElement.allowFullscreen = true;
+        //   console.log(this.iframe.nativeElement);
+        //
+        //   this.creator.giveLink(this);
+        // }
+        //
+        // this.directory_.loadComponentsFromType(iframeComponent);
     };
     AnimeComponent.prototype.giveLink = function (this_) {
         this.iframe = this_;
@@ -37,9 +41,6 @@ var AnimeComponent = (function () {
         return true;
     };
     AnimeComponent.prototype.ngAfterContentInit = function () {
-        this.dbHandle.bind(this, "to");
-        this.dbHandle.bind(this, "episode");
-        this.dbHandle.bind(this, "time");
     };
     AnimeComponent.prototype.turnOn = function () {
         this.dbHandle.play();

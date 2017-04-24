@@ -40,7 +40,6 @@ var FirebaseService = (function () {
     FirebaseService.prototype.getAnimes = function (ref, element) {
         firebase.database().ref("/epTrack").on('value', function (snapshot) {
             element.length = 0;
-            console.log(snapshot.val());
             for (var key in snapshot.val()) {
                 element.push(key);
             }

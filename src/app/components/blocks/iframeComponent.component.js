@@ -11,20 +11,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var platform_browser_1 = require("@angular/platform-browser");
 var http_1 = require('@angular/http');
-var Rx_1 = require('rxjs/Rx');
-require('rxjs/add/operator/map');
-require('rxjs/add/operator/catch');
 var iframeComponent = (function () {
     function iframeComponent(domSanitizer, http) {
         this.domSanitizer = domSanitizer;
         this.http = http;
+        this.selector = "iframeComponent";
+        this.dbHandle = this.directory.firebaseService;
     }
     iframeComponent.prototype.ngOnInit = function () {
         this.url_ = this.domSanitizer.bypassSecurityTrustResourceUrl(this.address);
-        this.http.get('https://www.google.fi/')
-            .map(function (asd) { return console.log(asd); })
-            .catch(function (error) { return Rx_1.Observable.throw(error.json().error || 'Server error'); })
-            .subscribe(function () { });
     };
     iframeComponent.prototype.onMessage = function (event) {
         console.log(event);
@@ -36,12 +31,12 @@ var iframeComponent = (function () {
     ], iframeComponent.prototype, "iframe", void 0);
     iframeComponent = __decorate([
         core_1.Component({
-            selector: "Web Page",
-            template: "\n  <iframe #iframe [src]=url_ width=\"100%\" style=\"height: 50vw\"\n  (window:message)=\"onMessage($event)\"\n  sandbox=\"allow-same-origin allow-scripts\"></iframe>\n  {{asd}}\n      ",
+            selector: "iframeComponent",
+            template: "\n  <iframe #iframe [src]=url_ width=\"100%\" style=\"height: 50vw\"\n  (window:message)=\"onMessage($event)\"\n  sandbox=\"allow-same-origin allow-scripts\"></iframe>\n      ",
         }), 
         __metadata('design:paramtypes', [platform_browser_1.DomSanitizer, http_1.Http])
     ], iframeComponent);
     return iframeComponent;
 }());
 exports.iframeComponent = iframeComponent;
-//# sourceMappingURL=iframe.component.js.map
+//# sourceMappingURL=iframeComponent.component.js.map

@@ -42,7 +42,6 @@ export class FirebaseService {
   getAnimes(ref, element) {
     firebase.database().ref("/epTrack").on('value', function(snapshot) {
       element.length = 0;
-      console.log(snapshot.val())
       for (let key in snapshot.val()) {
         element.push(key);
       }

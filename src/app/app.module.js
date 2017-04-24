@@ -15,7 +15,6 @@ var forms_1 = require('@angular/forms');
 var compiler_1 = require('@angular/compiler');
 var block_component_1 = require('./block.component');
 var componentdirectory_provider_1 = require('./components/componentdirectory.provider');
-var firebase_service_1 = require('./components/firebase.service');
 var Auth_service_1 = require('./Auth.service');
 var AppModule = (function () {
     function AppModule() {
@@ -25,7 +24,7 @@ var AppModule = (function () {
             imports: [platform_browser_1.BrowserModule, http_1.HttpModule, forms_1.FormsModule],
             declarations: [block_component_1.BlockComponent, block_component_1.LoaderComponent],
             bootstrap: [block_component_1.BlockComponent],
-            providers: [firebase_service_1.FirebaseService, compiler_1.COMPILER_PROVIDERS, Auth_service_1.Auth, componentdirectory_provider_1.ComponentDirectory]
+            providers: [compiler_1.COMPILER_PROVIDERS, Auth_service_1.Auth, componentdirectory_provider_1.ComponentDirectory]
         }), 
         __metadata('design:paramtypes', [])
     ], AppModule);

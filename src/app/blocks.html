@@ -1,16 +1,19 @@
 <div class="navbar-header">
   <button class="btn btn-primary btn-margin" (click)="auth.login()" *ngIf="!access">Log In</button>
-  <button class="btn btn-primary btn-margin" (click)="auth.logout()" *ngIf="access">Log Out</button>
+  <!-- <button class="btn btn-primary btn-margin" (click)="auth.logout()" *ngIf="access">Log Out</button> -->
   <h1 *ngIf="!access"> No access for you boi!</h1>
 </div>
 
 <span *ngIf="access">
   <div *ngFor="let block of components_" class="block" [style.clear]="float_[block]" [style.float]="float_[block]">
-    <span class="animeShow" *ngIf="!show_[block]">
+    <span id="{{ block }}" class="animeShow" *ngIf="!show_[block]">
       {{ block }}
     </span>
-      <img class="toggleShow" *ngIf="!show_[block]" src="img/plus.png" (click)="toggle([block])" />
-      <img class="toggleShow" *ngIf="show_[block]" src="img/minus.png" (click)="toggle([block])" />
+
+      <span class="blockControl glyphicon glyphicon-plus" *ngIf="!show_[block]" (click)="toggle([block])"></span>
+      <span class="blockControl glyphicon glyphicon-minus" *ngIf="show_[block]" (click)="toggle([block])"></span>
+      <span class="blockControl glyphicon glyphicon-fullscreen" *ngIf="show_[block]" src="img/minus.png" onClick="toggleFullscreen(this)"></span>
+      <span class="blockControl glyphicon glyphicon-refresh" (click)="refresh([block])"></span>
 
     <div class="content" *ngIf="show_[block]">
         <loader component={{block}}></loader>

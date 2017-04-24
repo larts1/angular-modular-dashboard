@@ -12,18 +12,63 @@ var core_1 = require('@angular/core');
 var compiler_1 = require('@angular/compiler');
 var forms_1 = require('@angular/forms');
 var platform_browser_1 = require('@angular/platform-browser');
-var loader_component_1 = require('./blocks/loader.component');
-var cards_component_1 = require('./blocks/cards.component');
-console.log(JSON.stringify(cards_component_1.CardsComponent.prototype));
+var loaderBlock_component_1 = require('./blocks/loaderBlock.component');
+var firebase_service_1 = require('./firebase.service');
+var http_1 = require('@angular/http');
+var DynamicModule = (function () {
+    function DynamicModule() {
+    }
+    return DynamicModule;
+}());
+var sharedModule = (function () {
+    function sharedModule() {
+    }
+    sharedModule = __decorate([
+        core_1.NgModule({
+            imports: [],
+            providers: []
+        }), 
+        __metadata('design:paramtypes', [])
+    ], sharedModule);
+    return sharedModule;
+}());
 var ComponentDirectory = (function () {
-    function ComponentDirectory(compiler) {
+    function ComponentDirectory(compiler, http, resolver) {
         this.compiler = compiler;
+        this.http = http;
+        this.resolver = resolver;
         this.components = {};
         this.factories = {};
         this.DoneLoading_ = false;
         this.LoadingEvent_ = new core_1.EventEmitter(); //not ment for this? Hey, it works!
-        this.loadComponentsFromType(loader_component_1.LoaderBlockComponent);
+        this.firebaseService = new firebase_service_1.FirebaseService();
+        this.loadComponentsFromType(loaderBlock_component_1.loaderBlock);
     }
+    ComponentDirectory.prototype.refreshComponent = function (name) {
+        //Poistetaan vanha factory heti, jottei enää anneta sitä vahingossa
+        if (name in this.factories)
+            delete this.factories[name];
+        //asynctoottinen, jää kesken
+        this.loadComponentsFromUrl("http://localhost:3000/app/components/blocks/" + name + ".component.js");
+    };
+    ComponentDirectory.prototype.loadComponent = function (name, opts) {
+        if (opts === void 0) { opts = {}; }
+        //Poistetaan vanha factory heti, jottei enää anneta sitä vahingossa
+        if (name in this.factories)
+            delete this.factories[name];
+        //asynctoottinen, jää kesken
+        this.loadComponentsFromUrl("http://localhost:3000/app/components/blocks/" + name + ".component.js", opts);
+    };
+    ComponentDirectory.prototype.loadComponentsFromUrl = function (url, opts) {
+        var _this = this;
+        if (opts === void 0) { opts = {}; }
+        this.http.get(url).subscribe(function (x) { return _this.loadComponentsFromType(eval(x["_body"]), opts); });
+        // this.http.get(url).subscribe( (x) => eval(x["_body"]) );
+    };
+    ComponentDirectory.prototype.importType = function (caller, name) {
+        this.http.get("http://localhost:3000/app/components/blocks/" + name + ".component.js")
+            .subscribe(function (x) { return caller[name] = eval(x["_body"]); });
+    };
     ComponentDirectory.prototype.loadComponentsFromModule = function (Module) {
         var _this = this;
         this.DoneLoading_ = false;
@@ -38,15 +83,22 @@ var ComponentDirectory = (function () {
             _this.LoadingEvent_.emit(Object.keys(_this.factories));
         });
     };
-    ComponentDirectory.prototype.loadComponentsFromType = function (type) {
+    ComponentDirectory.prototype.loadComponentsFromType = function (type, opts) {
+        if (opts === void 0) { opts = {}; }
         type.prototype.directory = this;
+        var selector = type.name;
+        //Välitetään optsit uudelle luokalle
+        for (var key in opts) {
+            type.prototype[key] = opts[key];
+            console.log(type.prototype[key]);
+        }
         var DynamicModule = (function () {
             function DynamicModule() {
             }
             DynamicModule = __decorate([
                 core_1.NgModule({
-                    imports: [platform_browser_1.BrowserModule, forms_1.FormsModule],
-                    declarations: [type],
+                    imports: [platform_browser_1.BrowserModule, forms_1.FormsModule, sharedModule],
+                    declarations: [type]
                 }), 
                 __metadata('design:paramtypes', [])
             ], DynamicModule);
@@ -54,35 +106,15 @@ var ComponentDirectory = (function () {
         }());
         this.loadComponentsFromModule(DynamicModule);
     };
-    ComponentDirectory.prototype.loadComponentsFromObj = function (data) {
-        var _DynamicComponent = (function () {
-            function _DynamicComponent() {
-            }
-            _DynamicComponent.prototype.ngOnDestroy = function () {
-                console.log("Destroied DynamicComponent");
-            };
-            _DynamicComponent = __decorate([
-                core_1.Component({
-                    selector: data.name,
-                    template: data.html,
-                }), 
-                __metadata('design:paramtypes', [])
-            ], _DynamicComponent);
-            return _DynamicComponent;
-        }());
-        this.loadComponentsFromType(_DynamicComponent);
-    };
     ComponentDirectory.prototype.getFactory = function (name) {
         var _this = this;
         // If factory exists give this;
         if (this.factories[name])
             return new Promise(function (resolve) {
-                console.log("Promise was ready and returned straight away");
                 resolve(_this.factories[name]);
             });
         //Palautetaan Promise compilaus eventtiin, toivotaan et sieltä tulee joskus
         return new Promise(function (resolve) {
-            console.log("Promise was not ready and returned promise");
             _this.LoadingEvent_.subscribe(function () { return resolve(_this.factories[name]); });
         });
     };
@@ -94,7 +126,7 @@ var ComponentDirectory = (function () {
     };
     ComponentDirectory = __decorate([
         core_1.Injectable(), 
-        __metadata('design:paramtypes', [compiler_1.JitCompiler])
+        __metadata('design:paramtypes', [compiler_1.JitCompiler, http_1.Http, core_1.ComponentFactoryResolver])
     ], ComponentDirectory);
     return ComponentDirectory;
 }());

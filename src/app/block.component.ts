@@ -11,7 +11,6 @@ import { Auth } from './Auth.service'
 @Component({
   selector: 'block',
   templateUrl: '/app/blocks.html',
-  styleUrls: ['/app/bloc_style.css'],
 })
 
 export class BlockComponent implements AfterViewInit{
@@ -39,7 +38,6 @@ export class BlockComponent implements AfterViewInit{
         }
 
         this.SyncComponents(newComps);
-        console.log("ASync adding components" + newComps)
         this.cdr.detectChanges(); // update page
       });
 
@@ -65,8 +63,19 @@ export class BlockComponent implements AfterViewInit{
   }
 
     toggle(event) {
-      console.log("Toggling component "+event)
       this.show_[event] = !this.show_[event];
+      this.cdr.detectChanges(); // update page
+    }
+
+    refresh(blockName) {
+      //Poistetaan vanha
+      this.show_[blockName] = false;
+
+      this.directory_.refreshComponent(blockName);
+      this.cdr.detectChanges(); // update page
+
+      //Avataan uusi !!! 
+      this.show_[blockName] = true;
       this.cdr.detectChanges(); // update page
     }
 
@@ -86,7 +95,6 @@ export class LoaderComponent implements AfterViewInit {
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver,
   private directory_: ComponentDirectory, private ref: ViewContainerRef) {
-    console.log("Constructed the LoaderComponent")
   }
 
   ngAfterViewInit() {
