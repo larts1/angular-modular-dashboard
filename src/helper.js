@@ -7,5 +7,6 @@ function toggleFullscreen(caller) {
 }
 
 function exitFullscreen() {
+  if (!document.getElementsByClassName('fullScreen')[0]) return;
   document.getElementsByClassName('fullScreen')[0].classList.remove('fullScreen');
 }

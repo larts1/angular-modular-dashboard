@@ -10,7 +10,7 @@ import { Http } from '@angular/http';
   template: `
   <iframe #iframe [src]=url_ width="100%" style="height: 50vw"
   (window:message)="onMessage($event)"
-  sandbox="allow-same-origin allow-scripts"></iframe>
+  sandbox="allow-same-origin allow-scripts" allowfullscreen></iframe>
       `,
 })
 export class iframeComponent{
@@ -20,7 +20,7 @@ export class iframeComponent{
   dbHandle : any;
   directory;
 
-  receiveMessage: EventListener;
+  // receiveMessage: EventListener;
 
   address;
   url_;

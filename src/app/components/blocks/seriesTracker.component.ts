@@ -8,6 +8,7 @@ declare var $:any;
     {{ name }}:
     <input type=text [(ngModel)]="episode" (change)="updateEp()"
      style="margin: 10px 0px; padding: 0px; max-width: 18%">
+     {{airdate}}
 
     <input type=button value="Next episodes" (click)="openNew()"
     (window:message)="onMessage($event)">
@@ -17,39 +18,24 @@ declare var $:any;
 export class seriesTracker{
   selector = "seriesTracker";
   name;
-  seriesName = "";
   episode = 0;
   directory;
   to;
-  iframe;
   url;
   dbHandle: any;
   iframeComponent: any;
+  tvdbService: any;
+  airdate;
 
   constructor() {
     this.dbHandle = this.directory.firebaseService;
-    this.directory.importType(this, "iframeComponent");
+    this.tvdbService = this.directory.tvdbService;
   }
 
   openNew() {
-    if (this.url == "gogo") this.iframeComponent.prototype.address = "https://ww1.gogoanime.io/" + this.name + "-episode-"+(this.episode+1);
-    else this.iframeComponent.prototype.address = this.url;
-
-    this.iframeComponent.prototype.creator = this;
-
-    this.iframeComponent.prototype.ngAfterViewInit = function() {
-      this.iframe.nativeElement.allowFullscreen = true;
-
-      this.creator.giveLink(this);
-    }
-    this.directory.loadComponentsFromType(this.iframeComponent);
-
-    this.openNew = function() {} //EI voi kutsua uudestaan :\
-
-  }
-
-  giveLink(this_) {
-    this.iframe = this_;
+    let url = this.url.replace("$name$", this.name);
+    url = url.replace("$episode$", this.episode+1);
+    this.directory.loadComponent("iframeComponent", { "address": url });
   }
 
   close() {
@@ -58,11 +44,11 @@ export class seriesTracker{
 
   ngAfterContentInit() {
      this.dbHandle.bind(this, "episode", "/epTrack/"+this.name+"/episode");
-     this.dbHandle.getUrl(this, "url", this.name)
   }
 
   updateEp($event) {
     this.dbHandle.update(this.episode, "/epTrack/"+this.name+"/episode");
+    this.tvdbService.bindAirDate(this.name, this.episode, this, "airdate")
   }
 
   ngOnDestroy() {

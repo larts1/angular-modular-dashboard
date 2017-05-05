@@ -28,6 +28,9 @@ var FirebaseService = (function () {
             ref[element] = snapshot.val();
         });
     };
+    FirebaseService.prototype.getEpisode = function (series) {
+        return firebase.database().ref("/epTrack/" + series + "/episode");
+    };
     FirebaseService.prototype.update = function (to, element) {
         firebase.database().ref(element).set(parseInt(to));
     };
@@ -43,6 +46,7 @@ var FirebaseService = (function () {
             for (var key in snapshot.val()) {
                 element.push(key);
             }
+            ref.getDates();
         });
     };
     FirebaseService.prototype.getUrl = function (ref, element, name) {

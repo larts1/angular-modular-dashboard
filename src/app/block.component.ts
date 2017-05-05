@@ -28,6 +28,7 @@ export class BlockComponent implements AfterViewInit{
       //Kun uusi componentti valmistuu katotaan oliks meillä se jo
       this.SyncComponents(this.directory_.getComponents());
 
+      //Kirjaudutaan päivittämään komponentit aina kun directory sanoo hep
       this.directory_.LoadingEvent_.subscribe((components) => {
 
         let newComps: string[] = [];
@@ -67,6 +68,17 @@ export class BlockComponent implements AfterViewInit{
       this.cdr.detectChanges(); // update page
     }
 
+    delete(event) {
+      this.show_[event] = false;
+      let index = this.components_.indexOf(event);
+      this.components_.splice(index, 1)
+
+      this.SyncComponents([]);
+      console.log(this.components_);
+
+      this.cdr.detectChanges(); // update page
+    }
+
     refresh(blockName) {
       //Poistetaan vanha
       this.show_[blockName] = false;
@@ -74,7 +86,7 @@ export class BlockComponent implements AfterViewInit{
       this.directory_.refreshComponent(blockName);
       this.cdr.detectChanges(); // update page
 
-      //Avataan uusi !!! 
+      //Avataan uusi !!!
       this.show_[blockName] = true;
       this.cdr.detectChanges(); // update page
     }
@@ -101,8 +113,7 @@ export class LoaderComponent implements AfterViewInit {
     this.directory_.getFactory(this.component).then(
     (factory: ComponentFactory<any>) => {
       let compRef = this.conteiner_.createComponent(factory);
-      compRef.changeDetectorRef.detectChanges() ; //#workign around stypid system
-      // compRef.instance.directory = this.directory_;
+      compRef.changeDetectorRef.detectChanges();
     });
 
   }

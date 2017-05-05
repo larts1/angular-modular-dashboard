@@ -26,6 +26,7 @@ var BlockComponent = (function () {
         var _this = this;
         //Kun uusi componentti valmistuu katotaan oliks meillä se jo
         this.SyncComponents(this.directory_.getComponents());
+        //Kirjaudutaan päivittämään komponentit aina kun directory sanoo hep
         this.directory_.LoadingEvent_.subscribe(function (components) {
             var newComps = [];
             for (var key in components) {
@@ -56,12 +57,20 @@ var BlockComponent = (function () {
         this.show_[event] = !this.show_[event];
         this.cdr.detectChanges(); // update page
     };
+    BlockComponent.prototype.delete = function (event) {
+        this.show_[event] = false;
+        var index = this.components_.indexOf(event);
+        this.components_.splice(index, 1);
+        this.SyncComponents([]);
+        console.log(this.components_);
+        this.cdr.detectChanges(); // update page
+    };
     BlockComponent.prototype.refresh = function (blockName) {
         //Poistetaan vanha
         this.show_[blockName] = false;
         this.directory_.refreshComponent(blockName);
         this.cdr.detectChanges(); // update page
-        //Avataan uusi !!! 
+        //Avataan uusi !!!
         this.show_[blockName] = true;
         this.cdr.detectChanges(); // update page
     };
@@ -86,8 +95,7 @@ var LoaderComponent = (function () {
         var _this = this;
         this.directory_.getFactory(this.component).then(function (factory) {
             var compRef = _this.conteiner_.createComponent(factory);
-            compRef.changeDetectorRef.detectChanges(); //#workign around stypid system
-            // compRef.instance.directory = this.directory_;
+            compRef.changeDetectorRef.detectChanges();
         });
     };
     __decorate([

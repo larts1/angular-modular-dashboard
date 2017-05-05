@@ -32,7 +32,7 @@ var iframeComponent = (function () {
     iframeComponent = __decorate([
         core_1.Component({
             selector: "iframeComponent",
-            template: "\n  <iframe #iframe [src]=url_ width=\"100%\" style=\"height: 50vw\"\n  (window:message)=\"onMessage($event)\"\n  sandbox=\"allow-same-origin allow-scripts\"></iframe>\n      ",
+            template: "\n  <iframe #iframe [src]=url_ width=\"100%\" style=\"height: 50vw\"\n  (window:message)=\"onMessage($event)\"\n  sandbox=\"allow-same-origin allow-scripts\" allowfullscreen></iframe>\n      ",
         }), 
         __metadata('design:paramtypes', [platform_browser_1.DomSanitizer, http_1.Http])
     ], iframeComponent);

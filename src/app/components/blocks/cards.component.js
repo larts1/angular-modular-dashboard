@@ -20,7 +20,7 @@ var CardsComponent = (function () {
     CardsComponent = __decorate([
         core_1.Component({
             selector: "cards",
-            template: 'To be implemented'
+            template: 'To be impleddmented'
         }), 
         __metadata('design:paramtypes', [])
     ], CardsComponent);

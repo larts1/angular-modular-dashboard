@@ -12,7 +12,8 @@
 
       <span class="blockControl glyphicon glyphicon-plus" *ngIf="!show_[block]" (click)="toggle([block])"></span>
       <span class="blockControl glyphicon glyphicon-minus" *ngIf="show_[block]" (click)="toggle([block])"></span>
-      <span class="blockControl glyphicon glyphicon-fullscreen" *ngIf="show_[block]" src="img/minus.png" onClick="toggleFullscreen(this)"></span>
+      <span class="blockControl glyphicon glyphicon-fullscreen" *ngIf="show_[block]" onClick="toggleFullscreen(this)"></span>
+      <span class="blockControl glyphicon glyphicon-trash" *ngIf="show_[block]" (click)="delete([block])"></span>
       <span class="blockControl glyphicon glyphicon-refresh" (click)="refresh([block])"></span>
 
     <div class="content" *ngIf="show_[block]">

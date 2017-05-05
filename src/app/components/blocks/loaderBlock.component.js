@@ -13,16 +13,58 @@ var loaderBlock = (function () {
     function loaderBlock() {
         this.selector = "loaderBlock";
         this.components = {};
-        this.compNames = Object.keys(this.components);
+        this.compNames = [];
         console.log("Created LoaderBlockComponent");
         this.dbHandle = this.directory.firebaseService; //servicet otetaan directoryltä.
-        this.dbHandle.getAnimes(this, this.compNames);
+        this.tvdb = this.directory.tvdbService;
     }
+    loaderBlock.prototype.tab = function () { return "Shows"; };
+    loaderBlock.prototype.ngAfterContentInit = function () {
+        var _this = this;
+        firebase.database().ref("/epTrack").on('value', function (snapshot) {
+            _this.compNames.length = 0;
+            for (var key in snapshot.val()) {
+                _this.compNames.push(key);
+                _this.components[key] = (snapshot.val()[key]);
+            }
+            _this.getDates();
+        });
+    };
     loaderBlock.prototype.ngOnDestroy = function () {
         console.log("Destroied LoaderBlockComponent");
     };
     loaderBlock.prototype.addComponent = function () {
-        this.directory.loadComponent("seriesTracker", { "name": this.compSelect });
+        this.directory.loadComponent("seriesTracker", {
+            "name": this.compSelect.split(";")[0],
+            "url": this.components[this.compSelect.split(";")[0]]["url"]
+        });
+    };
+    loaderBlock.prototype.getDates = function () {
+        var _this = this;
+        console.log(this.components);
+        var newNames = [];
+        var _loop_1 = function() {
+            var anime = this_1.compNames[key].split(";")[0];
+            var episode = this_1.components[anime]["episode"] + 1;
+            if (!("tvdb" in this_1.components[anime])) {
+                newNames.push(anime + ";" + (episode));
+            }
+            else {
+                this_1.tvdb.getAirDate(this_1.components[anime]["tvdb"], (episode)).subscribe(function (airdate) { return newNames.push(anime + ";" + (episode) + ";" + _this.getTimer(airdate["_body"])); });
+            }
+        };
+        var this_1 = this;
+        for (var key in this.compNames) {
+            _loop_1();
+        }
+        this.compNames = newNames;
+    };
+    loaderBlock.prototype.getTimer = function (string) {
+        if (Date.parse(string) < -590114664000)
+            return ("outOf " + string);
+        var timeToAirms = (Date.parse(string) - Date.now());
+        var timeToAir = Math.floor(timeToAirms / (1000 * 60 * 60 * 24));
+        return (timeToAir + " days");
     };
     loaderBlock = __decorate([
         core_1.Component({

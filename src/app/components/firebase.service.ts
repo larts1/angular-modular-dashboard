@@ -27,6 +27,10 @@ export class FirebaseService {
     });
   }
 
+  getEpisode(series) {
+    return firebase.database().ref("/epTrack/"+series+"/episode");
+  }
+
   update(to, element) {
     firebase.database().ref(element).set(parseInt(to));
   }
@@ -45,6 +49,7 @@ export class FirebaseService {
       for (let key in snapshot.val()) {
         element.push(key);
       }
+      ref.getDates();
     });
   }
 

@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 
 @Component({
   selector: "cards",
-  template: 'To be implemented'
+  template: 'To be impleddmented'
 })
 export class CardsComponent  {
   name = "ddds";

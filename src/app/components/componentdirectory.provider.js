@@ -14,6 +14,7 @@ var forms_1 = require('@angular/forms');
 var platform_browser_1 = require('@angular/platform-browser');
 var loaderBlock_component_1 = require('./blocks/loaderBlock.component');
 var firebase_service_1 = require('./firebase.service');
+var tvdb_service_1 = require('./tvdb.service');
 var http_1 = require('@angular/http');
 var DynamicModule = (function () {
     function DynamicModule() {
@@ -42,14 +43,17 @@ var ComponentDirectory = (function () {
         this.DoneLoading_ = false;
         this.LoadingEvent_ = new core_1.EventEmitter(); //not ment for this? Hey, it works!
         this.firebaseService = new firebase_service_1.FirebaseService();
+        this.tvdbService = new tvdb_service_1.tvdbService(this.http);
+        this.tabs = {};
         this.loadComponentsFromType(loaderBlock_component_1.loaderBlock);
+        this.loadComponent("sleepTracker");
     }
     ComponentDirectory.prototype.refreshComponent = function (name) {
         //Poistetaan vanha factory heti, jottei enää anneta sitä vahingossa
         if (name in this.factories)
             delete this.factories[name];
         //asynctoottinen, jää kesken
-        this.loadComponentsFromUrl("http://localhost:3000/app/components/blocks/" + name + ".component.js");
+        this.loadComponentsFromUrl("/app/components/blocks/" + name + ".component.js");
     };
     ComponentDirectory.prototype.loadComponent = function (name, opts) {
         if (opts === void 0) { opts = {}; }
@@ -57,16 +61,15 @@ var ComponentDirectory = (function () {
         if (name in this.factories)
             delete this.factories[name];
         //asynctoottinen, jää kesken
-        this.loadComponentsFromUrl("http://localhost:3000/app/components/blocks/" + name + ".component.js", opts);
+        this.loadComponentsFromUrl("/app/components/blocks/" + name + ".component.js", opts);
     };
     ComponentDirectory.prototype.loadComponentsFromUrl = function (url, opts) {
         var _this = this;
         if (opts === void 0) { opts = {}; }
         this.http.get(url).subscribe(function (x) { return _this.loadComponentsFromType(eval(x["_body"]), opts); });
-        // this.http.get(url).subscribe( (x) => eval(x["_body"]) );
     };
     ComponentDirectory.prototype.importType = function (caller, name) {
-        this.http.get("http://localhost:3000/app/components/blocks/" + name + ".component.js")
+        this.http.get("/app/components/blocks/" + name + ".component.js")
             .subscribe(function (x) { return caller[name] = eval(x["_body"]); });
     };
     ComponentDirectory.prototype.loadComponentsFromModule = function (Module) {
@@ -78,6 +81,9 @@ var ComponentDirectory = (function () {
             for (var key in componentFactories) {
                 var name_1 = componentFactories[key].selector;
                 _this.factories[name_1] = componentFactories[key];
+                if (typeof componentFactories[key].componentType.prototype.tab === 'function') {
+                    _this.tabs[componentFactories[key].componentType.prototype.tab()] = key;
+                }
             }
             _this.DoneLoading_ = true;
             _this.LoadingEvent_.emit(Object.keys(_this.factories));
@@ -86,11 +92,9 @@ var ComponentDirectory = (function () {
     ComponentDirectory.prototype.loadComponentsFromType = function (type, opts) {
         if (opts === void 0) { opts = {}; }
         type.prototype.directory = this;
-        var selector = type.name;
         //Välitetään optsit uudelle luokalle
         for (var key in opts) {
             type.prototype[key] = opts[key];
-            console.log(type.prototype[key]);
         }
         var DynamicModule = (function () {
             function DynamicModule() {

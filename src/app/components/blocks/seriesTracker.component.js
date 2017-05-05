@@ -12,43 +12,31 @@ var core_1 = require('@angular/core');
 var seriesTracker = (function () {
     function seriesTracker() {
         this.selector = "seriesTracker";
-        this.seriesName = "";
         this.episode = 0;
         this.dbHandle = this.directory.firebaseService;
-        this.directory.importType(this, "iframeComponent");
+        this.tvdbService = this.directory.tvdbService;
     }
     seriesTracker.prototype.openNew = function () {
-        if (this.url == "gogo")
-            this.iframeComponent.prototype.address = "https://ww1.gogoanime.io/" + this.name + "-episode-" + (this.episode + 1);
-        else
-            this.iframeComponent.prototype.address = this.url;
-        this.iframeComponent.prototype.creator = this;
-        this.iframeComponent.prototype.ngAfterViewInit = function () {
-            this.iframe.nativeElement.allowFullscreen = true;
-            this.creator.giveLink(this);
-        };
-        this.directory.loadComponentsFromType(this.iframeComponent);
-        this.openNew = function () { }; //EI voi kutsua uudestaan :\
-    };
-    seriesTracker.prototype.giveLink = function (this_) {
-        this.iframe = this_;
+        var url = this.url.replace("$name$", this.name);
+        url = url.replace("$episode$", this.episode + 1);
+        this.directory.loadComponent("iframeComponent", { "address": url });
     };
     seriesTracker.prototype.close = function () {
         return true;
     };
     seriesTracker.prototype.ngAfterContentInit = function () {
         this.dbHandle.bind(this, "episode", "/epTrack/" + this.name + "/episode");
-        this.dbHandle.getUrl(this, "url", this.name);
     };
     seriesTracker.prototype.updateEp = function ($event) {
         this.dbHandle.update(this.episode, "/epTrack/" + this.name + "/episode");
+        this.tvdbService.bindAirDate(this.name, this.episode, this, "airdate");
     };
     seriesTracker.prototype.ngOnDestroy = function () {
     };
     seriesTracker = __decorate([
         core_1.Component({
             selector: "seriesTracker",
-            template: "\n  <span>\n    {{ name }}:\n    <input type=text [(ngModel)]=\"episode\" (change)=\"updateEp()\"\n     style=\"margin: 10px 0px; padding: 0px; max-width: 18%\">\n\n    <input type=button value=\"Next episodes\" (click)=\"openNew()\"\n    (window:message)=\"onMessage($event)\">\n  </span>\n      ",
+            template: "\n  <span>\n    {{ name }}:\n    <input type=text [(ngModel)]=\"episode\" (change)=\"updateEp()\"\n     style=\"margin: 10px 0px; padding: 0px; max-width: 18%\">\n     {{airdate}}\n\n    <input type=button value=\"Next episodes\" (click)=\"openNew()\"\n    (window:message)=\"onMessage($event)\">\n  </span>\n      ",
         }), 
         __metadata('design:paramtypes', [])
     ], seriesTracker);

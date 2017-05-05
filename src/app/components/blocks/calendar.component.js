@@ -11,8 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var CalendarComponent = (function () {
     function CalendarComponent() {
-        this.name = "ddds";
-        this.contents = "<h1>asd</h1>";
         console.log("Created CalendarComponent");
     }
     CalendarComponent.prototype.ngOnDestroy = function () {
